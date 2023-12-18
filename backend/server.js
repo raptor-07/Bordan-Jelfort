@@ -1,13 +1,25 @@
-const WebSocket = require('ws');
+require("dotenv").config();
+const port = process.env.PORT || 5000;
+const mongoConnectionStr = process.env.MONGO_CONNECTION_STR;
 
-const wss = new WebSocket.Server({ port: 8080 });
+const mongoose = require("mongoose");
+const express = require("express");
+const app = express();
+const authRouter = require("./routers/authRouter");
 
-wss.on('connection', (ws) => {
-  console.log('Client connected to WebSocket');
-
-  ws.on('message', (message) => {
-    console.log(`Received message: ${message}`);
-    ws.send(`this is an LLM respose`);
-  });
+// Connect to MongoDB Atlas
+mongoose.connect(mongoConnectionStr, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 });
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "MongoDB connection error:"));
+db.once("open", () => console.log("MongoDB connection successful"));
 
+//mount routers to express object
+app.use("/auth", authRouter);
+
+// Start the server
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
