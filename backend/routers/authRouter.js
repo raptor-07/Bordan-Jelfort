@@ -4,7 +4,7 @@ const authController = require("../controllers/authController");
 
 authRouter.post(
   "/addUserSubscriptions",
-  authController.addUserSubscriptions(req, res)
+  authController.addUserSubscriptions
 );
 
 module.exports = authRouter;
