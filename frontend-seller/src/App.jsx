@@ -2,7 +2,7 @@ import { useState } from "react";
 
 function App() {
   const [formData, setFormData] = useState({
-    mail: "",
+    email: "",
     urls: [],
   });
 
@@ -10,15 +10,23 @@ function App() {
     event.preventDefault();
     console.log(event);
     console.log(formData);
+
+    fetch("http://localhost:3001/auth/addUserSubscriptions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    }).then((response) => {
+      console.log(response);
+    });
   };
 
   const handleMailChange = (event) => {
-    // console.log(event);
     setFormData({
       ...formData,
-      mail: event.target.value,
+      email: event.target.value,
     });
-    // console.log(formData);
   };
 
   const handleUrlChange = (event, index) => {
@@ -41,12 +49,12 @@ function App() {
   return (
     <>
       <form>
-        <label htmlFor="mail">Email</label>
+        <label htmlFor="email">Email</label>
         <input
           type="text"
-          name="mail"
+          name="email"
           placeholder="Enter your amazon seller email"
-          value={formData.mail}
+          value={formData.email}
           onChange={handleMailChange}
         />
         {formData.urls.map((url, index) => (
